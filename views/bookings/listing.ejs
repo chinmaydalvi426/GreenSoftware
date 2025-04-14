@@ -1,0 +1,287 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">Bookings for <%= listing.title %></h1>
+                    <p class="text-muted">
+                        <i class="fa-solid fa-location-dot me-1"></i>
+                        <%= listing.location %>, <%= listing.country %>
+                    </p>
+                </div>
+                
+                <div>
+                    <a href="/listings/<%= listing._id %>" class="btn btn-outline-secondary">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back to Listing
+                    </a>
+                </div>
+            </div>
+            
+            <% if (bookings.length === 0) { %>
+                <div class="alert alert-info">
+                    <p class="mb-0">No bookings have been made for this listing yet.</p>
+                </div>
+            <% } else { %>
+                <div class="card mb-4">
+                    <div class="card-header bg-white py-3">
+                        <ul class="nav nav-tabs card-header-tabs" id="bookingTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">
+                                    Upcoming
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">
+                                    Past
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="cancelled-tab" data-bs-toggle="tab" data-bs-target="#cancelled" type="button" role="tab" aria-controls="cancelled" aria-selected="false">
+                                    Cancelled
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="tab-content" id="bookingTabsContent">
+                            <!-- Upcoming Bookings -->
+                            <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+                                <% 
+                                const upcomingBookings = bookings.filter(booking => 
+                                    (booking.status === 'pending' || booking.status === 'confirmed') && 
+                                    new Date(booking.checkOut) >= new Date()
+                                );
+                                %>
+                                
+                                <% if (upcomingBookings.length === 0) { %>
+                                    <p class="text-muted">No upcoming bookings.</p>
+                                <% } else { %>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>Guest</th>
+                                                    <th>Dates</th>
+                                                    <th>Guests</th>
+                                                    <th>Total</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% upcomingBookings.forEach(booking => { %>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="guest-avatar me-2">
+                                                                    <%= booking.user.username ? booking.user.username.charAt(0).toUpperCase() : 'G' %>
+                                                                </div>
+                                                                <div>
+                                                                    <div><%= booking.user.username %></div>
+                                                                    <small class="text-muted"><%= booking.user.email %></small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div><%= new Date(booking.checkIn).toLocaleDateString() %></div>
+                                                            <div>to</div>
+                                                            <div><%= new Date(booking.checkOut).toLocaleDateString() %></div>
+                                                        </td>
+                                                        <td><%= booking.guests %></td>
+                                                        <td>₹<%= booking.totalPrice.toLocaleString("en-IN") %></td>
+                                                        <td>
+                                                            <% if (booking.status === 'pending') { %>
+                                                                <span class="badge bg-warning text-dark">Pending</span>
+                                                            <% } else if (booking.status === 'confirmed') { %>
+                                                                <span class="badge bg-success">Confirmed</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex">
+                                                                <a href="/bookings/<%= booking._id %>" class="btn btn-sm btn-outline-primary me-2">
+                                                                    Details
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <% } %>
+                            </div>
+                            
+                            <!-- Past Bookings -->
+                            <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+                                <% 
+                                const pastBookings = bookings.filter(booking => 
+                                    (booking.status === 'confirmed' || booking.status === 'completed') && 
+                                    new Date(booking.checkOut) < new Date()
+                                );
+                                %>
+                                
+                                <% if (pastBookings.length === 0) { %>
+                                    <p class="text-muted">No past bookings.</p>
+                                <% } else { %>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>Guest</th>
+                                                    <th>Dates</th>
+                                                    <th>Guests</th>
+                                                    <th>Total</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% pastBookings.forEach(booking => { %>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="guest-avatar me-2">
+                                                                    <%= booking.user.username ? booking.user.username.charAt(0).toUpperCase() : 'G' %>
+                                                                </div>
+                                                                <div>
+                                                                    <div><%= booking.user.username %></div>
+                                                                    <small class="text-muted"><%= booking.user.email %></small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div><%= new Date(booking.checkIn).toLocaleDateString() %></div>
+                                                            <div>to</div>
+                                                            <div><%= new Date(booking.checkOut).toLocaleDateString() %></div>
+                                                        </td>
+                                                        <td><%= booking.guests %></td>
+                                                        <td>₹<%= booking.totalPrice.toLocaleString("en-IN") %></td>
+                                                        <td>
+                                                            <span class="badge bg-secondary">Completed</span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex">
+                                                                <a href="/bookings/<%= booking._id %>" class="btn btn-sm btn-outline-primary me-2">
+                                                                    Details
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <% } %>
+                            </div>
+                            
+                            <!-- Cancelled Bookings -->
+                            <div class="tab-pane fade" id="cancelled" role="tabpanel" aria-labelledby="cancelled-tab">
+                                <% 
+                                const cancelledBookings = bookings.filter(booking => booking.status === 'cancelled');
+                                %>
+                                
+                                <% if (cancelledBookings.length === 0) { %>
+                                    <p class="text-muted">No cancelled bookings.</p>
+                                <% } else { %>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>Guest</th>
+                                                    <th>Dates</th>
+                                                    <th>Guests</th>
+                                                    <th>Total</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% cancelledBookings.forEach(booking => { %>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="guest-avatar me-2">
+                                                                    <%= booking.user.username ? booking.user.username.charAt(0).toUpperCase() : 'G' %>
+                                                                </div>
+                                                                <div>
+                                                                    <div><%= booking.user.username %></div>
+                                                                    <small class="text-muted"><%= booking.user.email %></small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div><%= new Date(booking.checkIn).toLocaleDateString() %></div>
+                                                            <div>to</div>
+                                                            <div><%= new Date(booking.checkOut).toLocaleDateString() %></div>
+                                                        </td>
+                                                        <td><%= booking.guests %></td>
+                                                        <td>₹<%= booking.totalPrice.toLocaleString("en-IN") %></td>
+                                                        <td>
+                                                            <span class="badge bg-danger">Cancelled</span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex">
+                                                                <a href="/bookings/<%= booking._id %>" class="btn btn-sm btn-outline-primary me-2">
+                                                                    Details
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+            
+            <div class="card">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Calendar View</h5>
+                </div>
+                
+                <div class="card-body">
+                    <p class="text-muted">
+                        <i class="fa-solid fa-info-circle me-1"></i>
+                        Calendar view will show all booked dates for this listing.
+                    </p>
+                    
+                    <div class="alert alert-primary">
+                        <i class="fa-solid fa-calendar-days me-2"></i>
+                        Calendar integration will be implemented in a future update.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .guest-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+    
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+</style>

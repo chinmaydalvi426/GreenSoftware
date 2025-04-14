@@ -1,0 +1,242 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="container my-5">
+    <h1 class="mb-4">My Bookings</h1>
+    
+    <% if (bookings.length === 0) { %>
+        <div class="alert alert-info">
+            <p class="mb-0">You don't have any bookings yet. <a href="/listings">Browse listings</a> to book your next stay!</p>
+        </div>
+    <% } else { %>
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs mb-4" id="bookingTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">
+                            Upcoming
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">
+                            Past
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="cancelled-tab" data-bs-toggle="tab" data-bs-target="#cancelled" type="button" role="tab" aria-controls="cancelled" aria-selected="false">
+                            Cancelled
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="bookingTabsContent">
+                    <!-- Upcoming Bookings -->
+                    <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+                        <% 
+                        const upcomingBookings = bookings.filter(booking => 
+                            (booking.status === 'pending' || booking.status === 'confirmed') && 
+                            new Date(booking.checkOut) >= new Date()
+                        );
+                        %>
+                        
+                        <% if (upcomingBookings.length === 0) { %>
+                            <p class="text-muted">You don't have any upcoming bookings.</p>
+                        <% } else { %>
+                            <div class="row">
+                                <% upcomingBookings.forEach(booking => { %>
+                                    <div class="col-md-6 col-lg-4 mb-4">
+                                        <div class="card h-100 booking-card">
+                                            <% if (booking.listing && booking.listing.image && booking.listing.image.url) { %>
+                                                <img src="<%= booking.listing.image.url %>" class="card-img-top" alt="<%= booking.listing.title %>" style="height: 200px; object-fit: cover;">
+                                            <% } else { %>
+                                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                    <i class="fa-solid fa-image fa-2x text-muted"></i>
+                                                </div>
+                                            <% } %>
+                                            
+                                            <div class="card-body">
+                                                <% if (booking.status === 'pending') { %>
+                                                    <span class="badge bg-warning text-dark mb-2">Pending</span>
+                                                <% } else if (booking.status === 'confirmed') { %>
+                                                    <span class="badge bg-success mb-2">Confirmed</span>
+                                                <% } %>
+                                                
+                                                <h5 class="card-title"><%= booking.listing.title %></h5>
+                                                <p class="card-text">
+                                                    <i class="fa-solid fa-location-dot me-1 text-primary"></i>
+                                                    <%= booking.listing.location %>, <%= booking.listing.country %>
+                                                </p>
+                                                
+                                                <div class="booking-dates mb-3">
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="fa-solid fa-calendar-check me-2 text-success"></i>
+                                                        <span>Check-in: <%= new Date(booking.checkIn).toLocaleDateString() %></span>
+                                                    </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fa-solid fa-calendar-xmark me-2 text-danger"></i>
+                                                        <span>Check-out: <%= new Date(booking.checkOut).toLocaleDateString() %></span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <p class="card-text fw-bold">
+                                                    Total: ₹<%= booking.totalPrice.toLocaleString("en-IN") %>
+                                                </p>
+                                            </div>
+                                            
+                                            <div class="card-footer bg-white border-top-0">
+                                                <div class="d-grid gap-2">
+                                                    <a href="/bookings/<%= booking._id %>" class="btn btn-outline-primary">View Details</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Past Bookings -->
+                    <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+                        <% 
+                        const pastBookings = bookings.filter(booking => 
+                            (booking.status === 'confirmed' || booking.status === 'completed') && 
+                            new Date(booking.checkOut) < new Date()
+                        );
+                        %>
+                        
+                        <% if (pastBookings.length === 0) { %>
+                            <p class="text-muted">You don't have any past bookings.</p>
+                        <% } else { %>
+                            <div class="row">
+                                <% pastBookings.forEach(booking => { %>
+                                    <div class="col-md-6 col-lg-4 mb-4">
+                                        <div class="card h-100 booking-card">
+                                            <% if (booking.listing && booking.listing.image && booking.listing.image.url) { %>
+                                                <img src="<%= booking.listing.image.url %>" class="card-img-top" alt="<%= booking.listing.title %>" style="height: 200px; object-fit: cover;">
+                                            <% } else { %>
+                                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                    <i class="fa-solid fa-image fa-2x text-muted"></i>
+                                                </div>
+                                            <% } %>
+                                            
+                                            <div class="card-body">
+                                                <span class="badge bg-secondary mb-2">Completed</span>
+                                                
+                                                <h5 class="card-title"><%= booking.listing.title %></h5>
+                                                <p class="card-text">
+                                                    <i class="fa-solid fa-location-dot me-1 text-primary"></i>
+                                                    <%= booking.listing.location %>, <%= booking.listing.country %>
+                                                </p>
+                                                
+                                                <div class="booking-dates mb-3">
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="fa-solid fa-calendar-check me-2 text-success"></i>
+                                                        <span>Check-in: <%= new Date(booking.checkIn).toLocaleDateString() %></span>
+                                                    </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fa-solid fa-calendar-xmark me-2 text-danger"></i>
+                                                        <span>Check-out: <%= new Date(booking.checkOut).toLocaleDateString() %></span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <p class="card-text fw-bold">
+                                                    Total: ₹<%= booking.totalPrice.toLocaleString("en-IN") %>
+                                                </p>
+                                            </div>
+                                            
+                                            <div class="card-footer bg-white border-top-0">
+                                                <div class="d-grid gap-2">
+                                                    <a href="/bookings/<%= booking._id %>" class="btn btn-outline-primary">View Details</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Cancelled Bookings -->
+                    <div class="tab-pane fade" id="cancelled" role="tabpanel" aria-labelledby="cancelled-tab">
+                        <% 
+                        const cancelledBookings = bookings.filter(booking => booking.status === 'cancelled');
+                        %>
+                        
+                        <% if (cancelledBookings.length === 0) { %>
+                            <p class="text-muted">You don't have any cancelled bookings.</p>
+                        <% } else { %>
+                            <div class="row">
+                                <% cancelledBookings.forEach(booking => { %>
+                                    <div class="col-md-6 col-lg-4 mb-4">
+                                        <div class="card h-100 booking-card">
+                                            <% if (booking.listing && booking.listing.image && booking.listing.image.url) { %>
+                                                <img src="<%= booking.listing.image.url %>" class="card-img-top" alt="<%= booking.listing.title %>" style="height: 200px; object-fit: cover;">
+                                            <% } else { %>
+                                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                    <i class="fa-solid fa-image fa-2x text-muted"></i>
+                                                </div>
+                                            <% } %>
+                                            
+                                            <div class="card-body">
+                                                <span class="badge bg-danger mb-2">Cancelled</span>
+                                                
+                                                <h5 class="card-title"><%= booking.listing.title %></h5>
+                                                <p class="card-text">
+                                                    <i class="fa-solid fa-location-dot me-1 text-primary"></i>
+                                                    <%= booking.listing.location %>, <%= booking.listing.country %>
+                                                </p>
+                                                
+                                                <div class="booking-dates mb-3">
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="fa-solid fa-calendar-check me-2 text-success"></i>
+                                                        <span>Check-in: <%= new Date(booking.checkIn).toLocaleDateString() %></span>
+                                                    </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fa-solid fa-calendar-xmark me-2 text-danger"></i>
+                                                        <span>Check-out: <%= new Date(booking.checkOut).toLocaleDateString() %></span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <p class="card-text fw-bold">
+                                                    Total: ₹<%= booking.totalPrice.toLocaleString("en-IN") %>
+                                                </p>
+                                            </div>
+                                            
+                                            <div class="card-footer bg-white border-top-0">
+                                                <div class="d-grid gap-2">
+                                                    <a href="/bookings/<%= booking._id %>" class="btn btn-outline-primary">View Details</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<style>
+    .booking-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+    
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+</style>

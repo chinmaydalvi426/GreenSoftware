@@ -1,0 +1,161 @@
+<style>
+  .navbar-brand {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-brand-text {
+    margin-left: 0.5rem;
+    display: none;
+  }
+  
+  @media (min-width: 768px) {
+    .navbar-brand-text {
+      display: inline;
+    }
+  }
+  
+  .btn-search {
+    background-color: var(--primary-color);
+    border-radius: 25px;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.3s ease;
+    color: white;
+    font-weight: 500;
+  }
+  
+  .btn-search:hover {
+    background-color: #e63946;
+    transform: translateY(-2px);
+  }
+  
+  .btn-search i {
+    display: inline;
+    margin-right: 0.5rem;
+  }
+  
+  .search-inp {
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+  }
+  
+  .search-inp:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(254, 66, 77, 0.25);
+  }
+  
+  .search-container {
+    width: 100%;
+    max-width: 450px;
+  }
+  
+  @media (max-width: 992px) {
+    .search-container {
+      margin: 1rem 0;
+      max-width: 100%;
+    }
+    
+    .navbar-nav.user-nav {
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .navbar-nav.user-nav .nav-link {
+      padding: 0.5rem 1rem;
+      background-color: #f8f9fa;
+      border-radius: 25px;
+      margin: 0.25rem;
+      text-align: center;
+    }
+  }
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/listings">
+      <i class="fa-solid fa-compass"></i>
+      <span class="navbar-brand-text">Wanderlust</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">  
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/listings"><b>Explore</b></a>
+      </div>
+      
+      <div class="navbar-nav mx-auto search-container">
+        <form class="d-flex w-100" role="search" action="/listings" method="GET">
+          <input 
+            class="form-control me-2 search-inp" 
+            type="search" 
+            name="search"
+            placeholder="Search destinations, hotels..." 
+            aria-label="Search"
+            value="<%= typeof filters !== 'undefined' && filters && filters.search ? filters.search : '' %>"
+          >
+          <button class="btn btn-search" type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span class="d-none d-md-inline">Search</span>
+          </button>
+        </form>
+      </div>
+      
+      <div class="navbar-nav ms-auto user-nav">
+        <a class="nav-link" href="/listings/new">
+          <i class="fa-solid fa-plus d-inline d-lg-none me-1"></i>
+          <span>Add Listing</span>
+        </a>
+
+        <% if(!curuser) { %>
+        <a class="nav-link" aria-current="page" href="/signup">
+          <i class="fa-solid fa-user-plus d-inline d-lg-none me-1"></i>
+          <span><b>Sign Up</b></span>
+        </a>
+        <a class="nav-link" href="/login">
+          <i class="fa-solid fa-right-to-bracket d-inline d-lg-none me-1"></i>
+          <span><b>Log In</b></span>
+        </a>
+        <% } %>
+        
+        <% if(curuser) { %>
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="user-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span class="d-none d-lg-inline"><%= curuser.username %></span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="/users/dashboard">Dashboard</a></li>
+            <li><a class="dropdown-item" href="/users/profile/<%= curuser._id %>">My Profile</a></li>
+            <li><a class="dropdown-item" href="/users/profile/<%= curuser._id %>/listings">My Listings</a></li>
+            <li><a class="dropdown-item" href="/bookings">My Bookings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/users/profile/<%= curuser._id %>/edit">Edit Profile</a></li>
+            <li><a class="dropdown-item" href="/logout">Log Out</a></li>
+          </ul>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

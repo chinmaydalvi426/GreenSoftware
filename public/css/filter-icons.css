@@ -1,0 +1,160 @@
+/* Filter Icons Styling */
+#filters-container {
+    margin-bottom: 2rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    background-color: #f8f9fa;
+    padding: 1.25rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+#filters-container::before {
+    content: "Categories";
+    position: absolute;
+    top: 0.5rem;
+    left: 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+#filters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    padding-top: 1rem;
+}
+
+/* For smaller screens, use 2 columns */
+@media (max-width: 576px) {
+    #filters {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* For larger screens, use 5 columns */
+@media (min-width: 992px) {
+    #filters {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+#filters a.filter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #495057;
+    padding: 1rem 0.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+    position: relative;
+    overflow: hidden;
+}
+
+#filters a.filter:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    color: var(--primary-color);
+}
+
+#filters a.filter.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+#filters a.filter div {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    z-index: 1;
+}
+
+#filters a.filter div i {
+    font-size: 1.5rem;
+    z-index: 2;
+    color: #495057;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+#filters a.filter.active div i {
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+#filters a.filter p {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Background images for each filter category */
+#filters a.filter[href="/listings"] div {
+    background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+#filters a.filter[href="/listings?category=Beach"] div {
+    background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+}
+
+#filters a.filter[href="/listings?category=Mountain"] div {
+    background-image: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+}
+
+#filters a.filter[href="/listings?category=City"] div {
+    background-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+#filters a.filter[href="/listings?category=Countryside"] div {
+    background-image: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+#filters a.filter[href="/listings?category=Lake"] div {
+    background-image: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+}
+
+#filters a.filter[href="/listings?category=Tropical"] div {
+    background-image: linear-gradient(135deg, #fddb92 0%, #d1fdff 100%);
+}
+
+#filters a.filter[href="/listings?category=Camping"] div {
+    background-image: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+}
+
+#filters a.filter[href="/listings?category=Skiing"] div {
+    background-image: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+}
+
+#filters a.filter[href="/listings?category=Desert"] div {
+    background-image: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+}
+
+#filters a.filter[href="/listings?category=Island"] div {
+    background-image: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);
+}
+
+/* Active filter styles - ensure icon is visible on colored background */
+#filters a.filter.active div {
+    background-image: none;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Add a subtle hover effect */
+#filters a.filter:hover div {
+    transform: scale(1.1);
+}

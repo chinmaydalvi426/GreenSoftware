@@ -1,0 +1,218 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">Booking Details</h1>
+                <a href="/bookings" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back to Bookings
+                </a>
+            </div>
+            
+            <div class="card mb-4 booking-detail-card">
+                <div class="card-header bg-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Booking #<%= booking._id.toString().slice(-6).toUpperCase() %></h5>
+                        <div>
+                            <% if (booking.status === 'pending') { %>
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            <% } else if (booking.status === 'confirmed') { %>
+                                <span class="badge bg-success">Confirmed</span>
+                            <% } else if (booking.status === 'cancelled') { %>
+                                <span class="badge bg-danger">Cancelled</span>
+                            <% } else if (booking.status === 'completed') { %>
+                                <span class="badge bg-secondary">Completed</span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <% if (booking.listing && booking.listing.image && booking.listing.image.url) { %>
+                                <img src="<%= booking.listing.image.url %>" class="img-fluid rounded mb-3" alt="<%= booking.listing.title %>">
+                            <% } else { %>
+                                <div class="bg-light d-flex align-items-center justify-content-center rounded mb-3" style="height: 200px;">
+                                    <i class="fa-solid fa-image fa-2x text-muted"></i>
+                                </div>
+                            <% } %>
+                        </div>
+                        
+                        <div class="col-md-7">
+                            <h4><%= booking.listing.title %></h4>
+                            <p class="text-muted">
+                                <i class="fa-solid fa-location-dot me-1"></i>
+                                <%= booking.listing.location %>, <%= booking.listing.country %>
+                            </p>
+                            
+                            <div class="d-flex align-items-center mb-3">
+                                <a href="/listings/<%= booking.listing._id %>" class="btn btn-sm btn-outline-primary">
+                                    View Listing
+                                </a>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="booking-info">
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <strong>Check-in:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <%= new Date(booking.checkIn).toLocaleDateString() %>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <strong>Check-out:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <%= new Date(booking.checkOut).toLocaleDateString() %>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <strong>Guests:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <%= booking.guests %> <%= booking.guests === 1 ? 'guest' : 'guests' %>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <strong>Booking Date:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <%= new Date(booking.createdAt).toLocaleDateString() %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Price Details</h5>
+                            <div class="price-breakdown mt-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>₹<%= booking.listing.price.toLocaleString("en-IN") %> × <%= Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / (1000 * 60 * 60 * 24)) %> nights</span>
+                                    <span>₹<%= booking.totalPrice.toLocaleString("en-IN") %></span>
+                                </div>
+                                
+                                <hr>
+                                
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total</span>
+                                    <span>₹<%= booking.totalPrice.toLocaleString("en-IN") %></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5>Payment Status</h5>
+                            <div class="mt-3">
+                                <% if (booking.paymentStatus === 'pending') { %>
+                                    <div class="alert alert-warning">
+                                        <i class="fa-solid fa-clock me-2"></i>
+                                        Payment Pending
+                                    </div>
+                                <% } else if (booking.paymentStatus === 'paid') { %>
+                                    <div class="alert alert-success">
+                                        <i class="fa-solid fa-check-circle me-2"></i>
+                                        Payment Completed
+                                    </div>
+                                <% } else if (booking.paymentStatus === 'refunded') { %>
+                                    <div class="alert alert-info">
+                                        <i class="fa-solid fa-rotate-left me-2"></i>
+                                        Payment Refunded
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <% if (isOwner && (booking.status === 'pending' || booking.status === 'confirmed')) { %>
+                            <form action="/bookings/<%= booking._id %>/cancel" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fa-solid fa-ban me-1"></i> Cancel Booking
+                                </button>
+                            </form>
+                        <% } else if (isHost) { %>
+                            <form action="/bookings/<%= booking._id %>/status" method="POST" class="d-flex align-items-center">
+                                <select name="status" class="form-select me-2" style="width: auto;">
+                                    <option value="pending" <%= booking.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                    <option value="confirmed" <%= booking.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+                                    <option value="cancelled" <%= booking.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                    <option value="completed" <%= booking.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary">Update Status</button>
+                            </form>
+                        <% } else { %>
+                            <div></div>
+                        <% } %>
+                        
+                        <% if (booking.status === 'confirmed' && booking.paymentStatus === 'pending') { %>
+                            <button class="btn btn-success">
+                                <i class="fa-solid fa-credit-card me-1"></i> Make Payment
+                            </button>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <% if (isHost) { %>
+                <div class="card mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Guest Information</h5>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="guest-avatar me-3">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            
+                            <div>
+                                <h5 class="mb-1"><%= booking.user.username %></h5>
+                                <p class="text-muted mb-0"><%= booking.user.email %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<style>
+    .booking-detail-card {
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .guest-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .price-breakdown {
+        font-size: 0.95rem;
+    }
+</style>

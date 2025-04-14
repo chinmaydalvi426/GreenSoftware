@@ -1,0 +1,228 @@
+/* Responsive Utilities for Wanderlust */
+
+/* Breakpoints:
+   - xs: 0-576px (default)
+   - sm: 576px-768px
+   - md: 768px-992px
+   - lg: 992px-1200px
+   - xl: 1200px+ 
+*/
+
+/* Responsive Text */
+.text-responsive {
+  font-size: calc(1rem + 0.5vw);
+}
+
+/* Responsive Spacing */
+@media (max-width: 576px) {
+  .mt-xs-0 { margin-top: 0 !important; }
+  .mt-xs-1 { margin-top: 0.25rem !important; }
+  .mt-xs-2 { margin-top: 0.5rem !important; }
+  .mt-xs-3 { margin-top: 1rem !important; }
+  .mt-xs-4 { margin-top: 1.5rem !important; }
+  .mt-xs-5 { margin-top: 3rem !important; }
+  
+  .mb-xs-0 { margin-bottom: 0 !important; }
+  .mb-xs-1 { margin-bottom: 0.25rem !important; }
+  .mb-xs-2 { margin-bottom: 0.5rem !important; }
+  .mb-xs-3 { margin-bottom: 1rem !important; }
+  .mb-xs-4 { margin-bottom: 1.5rem !important; }
+  .mb-xs-5 { margin-bottom: 3rem !important; }
+  
+  .p-xs-0 { padding: 0 !important; }
+  .p-xs-1 { padding: 0.25rem !important; }
+  .p-xs-2 { padding: 0.5rem !important; }
+  .p-xs-3 { padding: 1rem !important; }
+  .p-xs-4 { padding: 1.5rem !important; }
+  .p-xs-5 { padding: 3rem !important; }
+}
+
+/* Responsive Visibility */
+.hide-xs {
+  display: none !important;
+}
+
+@media (min-width: 576px) {
+  .hide-xs {
+    display: initial !important;
+  }
+  .hide-sm {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .hide-sm {
+    display: initial !important;
+  }
+  .hide-md {
+    display: none !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .hide-md {
+    display: initial !important;
+  }
+  .hide-lg {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hide-lg {
+    display: initial !important;
+  }
+  .hide-xl {
+    display: none !important;
+  }
+}
+
+/* Responsive Images */
+.img-fluid-height {
+  max-height: 100%;
+  width: auto;
+}
+
+/* Responsive Cards */
+.card-deck-responsive {
+  display: flex;
+  flex-flow: row wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.card-deck-responsive .card {
+  flex: 0 0 calc(100% - 30px);
+  margin-right: 15px;
+  margin-left: 15px;
+  margin-bottom: 30px;
+}
+
+@media (min-width: 576px) {
+  .card-deck-responsive .card {
+    flex: 0 0 calc(50% - 30px);
+  }
+}
+
+@media (min-width: 768px) {
+  .card-deck-responsive .card {
+    flex: 0 0 calc(33.333% - 30px);
+  }
+}
+
+@media (min-width: 992px) {
+  .card-deck-responsive .card {
+    flex: 0 0 calc(25% - 30px);
+  }
+}
+
+/* Responsive Tables */
+.table-responsive-custom {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 576px) {
+  .table-responsive-custom table {
+    display: block;
+  }
+  
+  .table-responsive-custom thead {
+    display: none;
+  }
+  
+  .table-responsive-custom tbody, 
+  .table-responsive-custom tr {
+    display: block;
+  }
+  
+  .table-responsive-custom td {
+    display: flex;
+    justify-content: space-between;
+    text-align: right;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem;
+  }
+  
+  .table-responsive-custom td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    text-align: left;
+    margin-right: auto;
+  }
+}
+
+/* Responsive Forms */
+@media (max-width: 576px) {
+  .form-responsive .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-responsive .form-control {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+  
+  .form-responsive .btn {
+    display: block;
+    width: 100%;
+  }
+}
+
+/* Responsive Grid Fixes */
+@media (max-width: 576px) {
+  .row-tight {
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+  
+  .row-tight > [class*="col-"] {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+/* Responsive Typography */
+@media (max-width: 576px) {
+  h1, .h1 { font-size: 1.75rem; }
+  h2, .h2 { font-size: 1.5rem; }
+  h3, .h3 { font-size: 1.25rem; }
+  h4, .h4 { font-size: 1.125rem; }
+}
+
+/* Responsive Utilities */
+.w-xs-100 { width: 100% !important; }
+
+@media (min-width: 576px) {
+  .w-sm-auto { width: auto !important; }
+  .w-sm-100 { width: 100% !important; }
+  .w-sm-75 { width: 75% !important; }
+  .w-sm-50 { width: 50% !important; }
+  .w-sm-25 { width: 25% !important; }
+}
+
+@media (min-width: 768px) {
+  .w-md-auto { width: auto !important; }
+  .w-md-100 { width: 100% !important; }
+  .w-md-75 { width: 75% !important; }
+  .w-md-50 { width: 50% !important; }
+  .w-md-25 { width: 25% !important; }
+}
+
+/* Responsive Flex Utilities */
+@media (max-width: 576px) {
+  .flex-xs-column { flex-direction: column !important; }
+  .flex-xs-row { flex-direction: row !important; }
+  .justify-content-xs-center { justify-content: center !important; }
+  .justify-content-xs-between { justify-content: space-between !important; }
+  .align-items-xs-center { align-items: center !important; }
+}
+
+/* Responsive Order */
+@media (max-width: 576px) {
+  .order-xs-1 { order: 1 !important; }
+  .order-xs-2 { order: 2 !important; }
+  .order-xs-3 { order: 3 !important; }
+}

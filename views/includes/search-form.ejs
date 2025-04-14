@@ -1,0 +1,103 @@
+<div class="search-form-container">
+    <form action="/listings" method="GET" class="search-form">
+        <div class="search-input-group">
+            <div class="search-input">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input 
+                    type="text" 
+                    name="search" 
+                    placeholder="Search destinations, properties..." 
+                    class="form-control search-control"
+                    value="<%= typeof filtersData !== 'undefined' && filtersData && filtersData.search ? filtersData.search : '' %>"
+                >
+            </div>
+            
+            <div class="search-divider"></div>
+            
+            <div class="search-input">
+                <i class="fa-solid fa-location-dot search-icon"></i>
+                <select name="location" class="form-select search-control">
+                    <option value="">Any location</option>
+                    <% if (typeof locationsData !== 'undefined') { %>
+                        <% locationsData.forEach(loc => { %>
+                            <option value="<%= loc %>" <%= typeof filtersData !== 'undefined' && filtersData && filtersData.location === loc ? 'selected' : '' %>><%= loc %></option>
+                        <% }) %>
+                    <% } %>
+                </select>
+            </div>
+            
+            <div class="search-divider"></div>
+            
+            <div class="search-input">
+                <i class="fa-solid fa-indian-rupee-sign search-icon"></i>
+                <select name="sort" class="form-select search-control">
+                    <option value="default" <%= typeof filtersData !== 'undefined' && filtersData && filtersData.sort === 'default' ? 'selected' : '' %>>Sort by: Featured</option>
+                    <option value="price_asc" <%= typeof filtersData !== 'undefined' && filtersData && filtersData.sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+                    <option value="price_desc" <%= typeof filtersData !== 'undefined' && filtersData && filtersData.sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+                    <option value="newest" <%= typeof filtersData !== 'undefined' && filtersData && filtersData.sort === 'newest' ? 'selected' : '' %>>Newest First</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary search-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Search</span>
+            </button>
+        </div>
+        
+        <div class="advanced-search-toggle">
+            <a data-bs-toggle="collapse" href="#advancedSearch" role="button" aria-expanded="false" aria-controls="advancedSearch">
+                <i class="fa-solid fa-sliders"></i> Advanced Filters
+            </a>
+        </div>
+        
+        <div class="collapse" id="advancedSearch">
+            <div class="advanced-search-container">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Category</label>
+                        <select name="category" class="form-select">
+                            <option value="all">All Categories</option>
+                            <% if (typeof categoriesData !== 'undefined') { %>
+                                <% categoriesData.forEach(cat => { %>
+                                    <option value="<%= cat %>" <%= typeof filtersData !== 'undefined' && filtersData && filtersData.category === cat ? 'selected' : '' %>><%= cat %></option>
+                                <% }) %>
+                            <% } %>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Min Price (₹)</label>
+                        <input 
+                            type="number" 
+                            name="minPrice" 
+                            class="form-control" 
+                            placeholder="Min Price" 
+                            min="0"
+                            value="<%= typeof filtersData !== 'undefined' && filtersData && filtersData.minPrice ? filtersData.minPrice : '' %>"
+                        >
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Max Price (₹)</label>
+                        <input 
+                            type="number" 
+                            name="maxPrice" 
+                            class="form-control" 
+                            placeholder="Max Price"
+                            value="<%= typeof filtersData !== 'undefined' && filtersData && filtersData.maxPrice ? filtersData.maxPrice : '' %>"
+                        >
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-end">
+                            <button type="reset" class="btn btn-outline-secondary me-2">Reset</button>
+                            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,444 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/filter-icons.css">
+<link rel="stylesheet" href="/css/tax-display.css">
+
+<%
+// Initialize filters if not defined
+const filtersData = typeof filters !== 'undefined' ? filters : {};
+const locationsData = typeof locations !== 'undefined' ? locations : [];
+const categoriesData = typeof categories !== 'undefined' ? categories : ['Beach', 'Mountain', 'City', 'Countryside', 'Lake', 'Tropical', 'Camping', 'Skiing', 'Desert', 'Island'];
+%>
+
+<div class="container">
+  <!-- Advanced Search Form -->
+  <%- include("../includes/search-form.ejs") %>
+  
+  <!-- Active Filters Display -->
+  <% if (filtersData.search || filtersData.location || filtersData.category !== 'all' || filtersData.minPrice || filtersData.maxPrice) { %>
+  <div class="filter-tags">
+    <% if (filtersData.search) { %>
+    <div class="filter-tag">
+      <span>Search: <%= filtersData.search %></span>
+      <a href="/listings?<%= new URLSearchParams(Object.assign({}, filtersData, {search: ''})).toString() %>" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </a>
+    </div>
+    <% } %>
+    
+    <% if (filtersData.location) { %>
+    <div class="filter-tag">
+      <span>Location: <%= filtersData.location %></span>
+      <a href="/listings?<%= new URLSearchParams(Object.assign({}, filtersData, {location: ''})).toString() %>" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </a>
+    </div>
+    <% } %>
+    
+    <% if (filtersData.category && filtersData.category !== 'all') { %>
+    <div class="filter-tag">
+      <span>Category: <%= filtersData.category %></span>
+      <a href="/listings?<%= new URLSearchParams(Object.assign({}, filtersData, {category: 'all'})).toString() %>" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </a>
+    </div>
+    <% } %>
+    
+    <% if (filtersData.minPrice) { %>
+    <div class="filter-tag">
+      <span>Min Price: ₹<%= filtersData.minPrice %></span>
+      <a href="/listings?<%= new URLSearchParams(Object.assign({}, filtersData, {minPrice: ''})).toString() %>" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </a>
+    </div>
+    <% } %>
+    
+    <% if (filtersData.maxPrice) { %>
+    <div class="filter-tag">
+      <span>Max Price: ₹<%= filtersData.maxPrice %></span>
+      <a href="/listings?<%= new URLSearchParams(Object.assign({}, filtersData, {maxPrice: ''})).toString() %>" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </a>
+    </div>
+    <% } %>
+    
+    <a href="/listings" class="btn btn-sm btn-outline-secondary">Clear All Filters</a>
+  </div>
+  <% } %>
+  
+  <div class="row">
+    <!-- Sidebar Filters (Desktop) -->
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="filter-sidebar">
+        <h5>Filter Results</h5>
+        
+        <form action="/listings" method="GET" id="sidebarFilterForm">
+          <!-- Preserve existing search query -->
+          <% if (filtersData && filtersData.search) { %>
+          <input type="hidden" name="search" value="<%= filtersData.search %>">
+          <% } %>
+          
+          <div class="filter-section">
+            <div class="filter-section-title">Category</div>
+            <div class="filter-checkbox-list">
+              <% if (typeof categoriesData !== 'undefined') { %>
+                <div class="filter-checkbox-item">
+                  <input 
+                    type="radio" 
+                    id="category-all" 
+                    name="category" 
+                    value="all" 
+                    <%= !filtersData.category || filtersData.category === 'all' ? 'checked' : '' %>
+                    class="filter-checkbox"
+                  >
+                  <label for="category-all">All Categories</label>
+                </div>
+                <% categoriesData.forEach((cat, index) => { %>
+                <div class="filter-checkbox-item">
+                  <input 
+                    type="radio" 
+                    id="category-<%= index %>" 
+                    name="category" 
+                    value="<%= cat %>" 
+                    <%= filtersData.category === cat ? 'checked' : '' %>
+                    class="filter-checkbox"
+                  >
+                  <label for="category-<%= index %>"><%= cat %></label>
+                </div>
+                <% }) %>
+              <% } %>
+            </div>
+          </div>
+          
+          <div class="filter-section">
+            <div class="filter-section-title">Price Range</div>
+            <div class="row">
+              <div class="col-6">
+                <label class="form-label small">Min Price</label>
+                <input 
+                  type="number" 
+                  name="minPrice" 
+                  class="form-control form-control-sm" 
+                  placeholder="Min" 
+                  min="0"
+                  value="<%= filtersData.minPrice || '' %>"
+                >
+              </div>
+              <div class="col-6">
+                <label class="form-label small">Max Price</label>
+                <input 
+                  type="number" 
+                  name="maxPrice" 
+                  class="form-control form-control-sm" 
+                  placeholder="Max"
+                  value="<%= filtersData.maxPrice || '' %>"
+                >
+              </div>
+            </div>
+          </div>
+          
+          <div class="filter-section">
+            <div class="filter-section-title">Location</div>
+            <select name="location" class="form-select form-select-sm">
+              <option value="">Any location</option>
+              <% if (typeof locationsData !== 'undefined') { %>
+                <% locationsData.forEach(loc => { %>
+                  <option value="<%= loc %>" <%= filtersData.location === loc ? 'selected' : '' %>><%= loc %></option>
+                <% }) %>
+              <% } %>
+            </select>
+          </div>
+          
+          <div class="filter-section">
+            <div class="filter-section-title">Sort By</div>
+            <select name="sort" class="form-select form-select-sm">
+              <option value="default" <%= filtersData.sort === 'default' ? 'selected' : '' %>>Featured</option>
+              <option value="price_asc" <%= filtersData.sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+              <option value="price_desc" <%= filtersData.sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+              <option value="newest" <%= filtersData.sort === 'newest' ? 'selected' : '' %>>Newest First</option>
+            </select>
+          </div>
+          
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+            <a href="/listings" class="btn btn-outline-secondary">Reset All</a>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="col-lg-9">
+      <!-- Category Filters -->
+      <div id="filters-container">
+        <div id="filters">
+          <a href="/listings" class="filter <%= !filtersData.category || filtersData.category === 'all' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-border-all"></i></div>
+            <p>All Stays</p>
+          </a>
+          
+          <a href="/listings?category=Beach" class="filter <%= filtersData.category === 'Beach' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-umbrella-beach"></i></div>
+            <p>Beach</p>
+          </a>
+          
+          <a href="/listings?category=Mountain" class="filter <%= filtersData.category === 'Mountain' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-mountain-sun"></i></div>
+            <p>Mountain</p>
+          </a>
+          
+          <a href="/listings?category=City" class="filter <%= filtersData.category === 'City' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-city"></i></div>
+            <p>City</p>
+          </a>
+          
+          <a href="/listings?category=Countryside" class="filter <%= filtersData.category === 'Countryside' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-tree"></i></div>
+            <p>Countryside</p>
+          </a>
+          
+          <a href="/listings?category=Lake" class="filter <%= filtersData.category === 'Lake' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-water"></i></div>
+            <p>Lake</p>
+          </a>
+          
+          <a href="/listings?category=Tropical" class="filter <%= filtersData.category === 'Tropical' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-leaf"></i></div>
+            <p>Tropical</p>
+          </a>
+          
+          <a href="/listings?category=Camping" class="filter <%= filtersData.category === 'Camping' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-campground"></i></div>
+            <p>Camping</p>
+          </a>
+          
+          <a href="/listings?category=Skiing" class="filter <%= filtersData.category === 'Skiing' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-person-skiing"></i></div>
+            <p>Skiing</p>
+          </a>
+          
+          <a href="/listings?category=Desert" class="filter <%= filtersData.category === 'Desert' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-sun"></i></div>
+            <p>Desert</p>
+          </a>
+          
+          <a href="/listings?category=Island" class="filter <%= filtersData.category === 'Island' ? 'active' : '' %>">
+            <div><i class="fa-solid fa-umbrella-beach"></i></div>
+            <p>Island</p>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Results Header -->
+      <div class="search-results-header">
+        <div>
+          <h4>Search Results</h4>
+          <p class="search-results-count"><%= alllisting.length %> properties found</p>
+        </div>
+      </div>
+      
+      <!-- No Results Message -->
+      <% if (alllisting.length === 0) { %>
+      <div class="no-results">
+        <i class="fa-solid fa-search"></i>
+        <h3>No listings found</h3>
+        <p>Try adjusting your search filters or browse all listings</p>
+        <a href="/listings" class="btn btn-primary">View All Listings</a>
+      </div>
+      <% } %>
+      
+      <!-- Results Grid -->
+      <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% for (let list of alllisting) { %>
+          <div class="col">
+            <a href="/listings/<%= list.id %>" class="listing-links">
+              <div class="card-listings h-100">
+                <img src="<%= list.image.url %>" class="card-img-top" alt="<%= list.title %>" loading="lazy">
+                
+                <div class="card-img-overlay">
+                  <h5 class="card-title">View Details</h5>
+                </div>
+                  
+                <div class="card-body">
+                  <h5 class="card-title"><%= list.title %></h5>
+                  <p class="card-location"><i class="fa-solid fa-location-dot me-1"></i><%= list.location %>, <%= list.country %></p>
+                  <% 
+                    const taxInfo = taxCalculator.getTaxInfo(list.price, list.country, list.location);
+                  %>
+                  <p class="card-price">
+                    <span class="base-price">₹<%= list.price.toLocaleString("en-IN") %></span> <span class="text-muted">/night</span>
+                    <span class="tax-info" data-tax-rate="<%= taxInfo.taxRate %>" data-tax-amount="<%= taxInfo.taxAmount %>" data-total="<%= taxInfo.totalPrice %>">&nbsp;<%= taxInfo.formattedTaxInfo %></span>
+                  </p>
+                  <p class="total-price">
+                    <span>Total: ₹<%= taxInfo.totalPrice.toLocaleString("en-IN") %></span>
+                    <small class="text-muted">(incl. <%= taxInfo.taxName %>)</small>
+                  </p>
+                  <div class="card-rating">
+                    <i class="fa-solid fa-star"></i>
+                    <span>4.9</span>
+                    <span class="text-muted ms-1">(<%= list.review ? list.review.length : 0 %> reviews)</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Filter Toggle Button -->
+<button class="mobile-filter-toggle d-lg-none" id="mobileFilterToggle">
+  <i class="fa-solid fa-sliders"></i>
+</button>
+
+<!-- Mobile Filter Drawer -->
+<div class="filter-drawer" id="filterDrawer">
+  <div class="filter-drawer-header">
+    <h5 class="filter-drawer-title">Filters</h5>
+    <button class="filter-drawer-close" id="filterDrawerClose">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  
+  <form action="/listings" method="GET" id="mobileFilterForm">
+    <!-- Preserve existing search query -->
+    <% if (filtersData && filtersData.search) { %>
+    <input type="hidden" name="search" value="<%= filtersData.search %>">
+    <% } %>
+    
+    <div class="filter-section">
+      <div class="filter-section-title">Category</div>
+      <div class="filter-checkbox-list">
+        <% if (typeof categoriesData !== 'undefined') { %>
+          <div class="filter-checkbox-item">
+            <input 
+              type="radio" 
+              id="mobile-category-all" 
+              name="category" 
+              value="all" 
+              <%= !filtersData.category || filtersData.category === 'all' ? 'checked' : '' %>
+              class="filter-checkbox"
+            >
+            <label for="mobile-category-all">All Categories</label>
+          </div>
+          <% categoriesData.forEach((cat, index) => { %>
+          <div class="filter-checkbox-item">
+            <input 
+              type="radio" 
+              id="mobile-category-<%= index %>" 
+              name="category" 
+              value="<%= cat %>" 
+              <%= filtersData.category === cat ? 'checked' : '' %>
+              class="filter-checkbox"
+            >
+            <label for="mobile-category-<%= index %>"><%= cat %></label>
+          </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+    
+    <div class="filter-section">
+      <div class="filter-section-title">Price Range</div>
+      <div class="row">
+        <div class="col-6">
+          <label class="form-label small">Min Price</label>
+          <input 
+            type="number" 
+            name="minPrice" 
+            class="form-control form-control-sm" 
+            placeholder="Min" 
+            min="0"
+            value="<%= filtersData.minPrice || '' %>"
+          >
+        </div>
+        <div class="col-6">
+          <label class="form-label small">Max Price</label>
+          <input 
+            type="number" 
+            name="maxPrice" 
+            class="form-control form-control-sm" 
+            placeholder="Max"
+            value="<%= filtersData.maxPrice || '' %>"
+          >
+        </div>
+      </div>
+    </div>
+    
+    <div class="filter-section">
+      <div class="filter-section-title">Location</div>
+      <select name="location" class="form-select form-select-sm">
+        <option value="">Any location</option>
+        <% if (typeof locationsData !== 'undefined') { %>
+          <% locationsData.forEach(loc => { %>
+            <option value="<%= loc %>" <%= filtersData.location === loc ? 'selected' : '' %>><%= loc %></option>
+          <% }) %>
+        <% } %>
+      </select>
+    </div>
+    
+    <div class="filter-section">
+      <div class="filter-section-title">Sort By</div>
+      <select name="sort" class="form-select form-select-sm">
+        <option value="default" <%= filtersData.sort === 'default' ? 'selected' : '' %>>Featured</option>
+        <option value="price_asc" <%= filtersData.sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+        <option value="price_desc" <%= filtersData.sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+        <option value="newest" <%= filtersData.sort === 'newest' ? 'selected' : '' %>>Newest First</option>
+      </select>
+    </div>
+    
+    <div class="filter-drawer-footer">
+      <a href="/listings" class="btn btn-outline-secondary">Reset All</a>
+      <button type="submit" class="btn btn-primary">Apply Filters</button>
+    </div>
+  </form>
+</div>
+
+<!-- Overlay for Mobile Filter -->
+<div class="filter-overlay" id="filterOverlay"></div>
+
+<script>
+  // Tax switch functionality
+  let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+  taxSwitch.addEventListener("click", () => {
+    let taxInfo = document.getElementsByClassName("tax-info");
+    for (let info of taxInfo) {
+      if(info.style.display != "inline") {
+        info.style.display = "inline";
+      } else {
+        info.style.display = "none";
+      }     
+    }
+  });
+  
+  // Auto-submit sidebar filter form when any filter changes
+  document.querySelectorAll('#sidebarFilterForm .filter-checkbox, #sidebarFilterForm select').forEach(element => {
+    element.addEventListener('change', () => {
+      document.getElementById('sidebarFilterForm').submit();
+    });
+  });
+  
+  // Mobile filter drawer functionality
+  const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+  const filterDrawer = document.getElementById('filterDrawer');
+  const filterOverlay = document.getElementById('filterOverlay');
+  const filterDrawerClose = document.getElementById('filterDrawerClose');
+  
+  mobileFilterToggle.addEventListener('click', () => {
+    filterDrawer.classList.add('show');
+    filterOverlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  });
+  
+  function closeFilterDrawer() {
+    filterDrawer.classList.remove('show');
+    filterOverlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  
+  filterDrawerClose.addEventListener('click', closeFilterDrawer);
+  filterOverlay.addEventListener('click', closeFilterDrawer);
+</script>

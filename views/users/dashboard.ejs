@@ -1,0 +1,296 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="container my-5">
+    <h1 class="mb-4">Dashboard</h1>
+    
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card dashboard-stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">My Listings</h6>
+                            <h3 class="mb-0"><%= listingCount %></h3>
+                        </div>
+                        <div class="dashboard-stat-icon">
+                            <i class="fa-solid fa-home"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a href="/users/profile/<%= curuser._id %>/listings" class="text-decoration-none">View All <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card dashboard-stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">My Bookings</h6>
+                            <h3 class="mb-0"><%= bookings.length %></h3>
+                        </div>
+                        <div class="dashboard-stat-icon">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a href="/bookings" class="text-decoration-none">View All <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card dashboard-stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Received Bookings</h6>
+                            <h3 class="mb-0"><%= receivedBookings.length %></h3>
+                        </div>
+                        <div class="dashboard-stat-icon">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a href="#received-bookings" class="text-decoration-none">View All <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card dashboard-stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Profile Views</h6>
+                            <h3 class="mb-0">--</h3>
+                        </div>
+                        <div class="dashboard-stat-icon">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <span class="text-muted">Coming soon</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Recent Bookings -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">My Recent Bookings</h5>
+                    <a href="/bookings" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                
+                <div class="card-body">
+                    <% if (bookings.length > 0) { %>
+                        <div class="list-group">
+                            <% bookings.forEach(booking => { %>
+                                <a href="/bookings/<%= booking._id %>" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1"><%= booking.listing.title %></h6>
+                                            <p class="mb-1 small text-muted">
+                                                <i class="fa-solid fa-calendar me-1"></i>
+                                                <%= new Date(booking.checkIn).toLocaleDateString() %> to <%= new Date(booking.checkOut).toLocaleDateString() %>
+                                            </p>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-<%= 
+                                                booking.status === 'pending' ? 'warning text-dark' : 
+                                                booking.status === 'confirmed' ? 'success' : 
+                                                booking.status === 'cancelled' ? 'danger' : 
+                                                'secondary' 
+                                            %>">
+                                                <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                                            </span>
+                                            <div class="small mt-1">₹<%= booking.totalPrice.toLocaleString("en-IN") %></div>
+                                        </div>
+                                    </div>
+                                </a>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center py-4">
+                            <i class="fa-solid fa-calendar-xmark fa-2x text-muted mb-3"></i>
+                            <p class="mb-0">You haven't made any bookings yet.</p>
+                            <a href="/listings" class="btn btn-primary mt-3">Browse Listings</a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Received Bookings -->
+        <div class="col-lg-6 mb-4" id="received-bookings">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Bookings for My Listings</h5>
+                </div>
+                
+                <div class="card-body">
+                    <% if (receivedBookings.length > 0) { %>
+                        <div class="list-group">
+                            <% receivedBookings.forEach(booking => { %>
+                                <a href="/bookings/<%= booking._id %>" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1"><%= booking.listing.title %></h6>
+                                            <p class="mb-1 small">
+                                                <span class="text-muted">Guest:</span> <%= booking.user.username %>
+                                            </p>
+                                            <p class="mb-1 small text-muted">
+                                                <i class="fa-solid fa-calendar me-1"></i>
+                                                <%= new Date(booking.checkIn).toLocaleDateString() %> to <%= new Date(booking.checkOut).toLocaleDateString() %>
+                                            </p>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-<%= 
+                                                booking.status === 'pending' ? 'warning text-dark' : 
+                                                booking.status === 'confirmed' ? 'success' : 
+                                                booking.status === 'cancelled' ? 'danger' : 
+                                                'secondary' 
+                                            %>">
+                                                <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                                            </span>
+                                            <div class="small mt-1">₹<%= booking.totalPrice.toLocaleString("en-IN") %></div>
+                                        </div>
+                                    </div>
+                                </a>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center py-4">
+                            <i class="fa-solid fa-clipboard-list fa-2x text-muted mb-3"></i>
+                            <p class="mb-0">No bookings received for your listings yet.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="/listings/new" class="card quick-action-card text-decoration-none">
+                                <div class="card-body text-center">
+                                    <div class="quick-action-icon mb-3">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </div>
+                                    <h6>Add New Listing</h6>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-3 mb-3">
+                            <a href="/users/profile/<%= curuser._id %>/edit" class="card quick-action-card text-decoration-none">
+                                <div class="card-body text-center">
+                                    <div class="quick-action-icon mb-3">
+                                        <i class="fa-solid fa-user-pen"></i>
+                                    </div>
+                                    <h6>Edit Profile</h6>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-3 mb-3">
+                            <a href="/bookings" class="card quick-action-card text-decoration-none">
+                                <div class="card-body text-center">
+                                    <div class="quick-action-icon mb-3">
+                                        <i class="fa-solid fa-calendar-check"></i>
+                                    </div>
+                                    <h6>Manage Bookings</h6>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-3 mb-3">
+                            <a href="/listings" class="card quick-action-card text-decoration-none">
+                                <div class="card-body text-center">
+                                    <div class="quick-action-icon mb-3">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </div>
+                                    <h6>Browse Listings</h6>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-stat-card {
+        border-radius: 0.5rem;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .dashboard-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .dashboard-stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    .quick-action-card {
+        border-radius: 0.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+    
+    .quick-action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .quick-action-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+    }
+    
+    .quick-action-card:hover .quick-action-icon {
+        background-color: white;
+    }
+</style>

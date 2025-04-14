@@ -1,0 +1,61 @@
+/* Tax Display Styling */
+
+.tax-info {
+    font-size: 0.8rem;
+    color: #6c757d;
+    display: inline;
+}
+
+.total-price {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-top: 0.25rem;
+    font-size: 1.1rem;
+    display: block;
+}
+
+.total-price small {
+    font-size: 0.75rem;
+    font-weight: normal;
+}
+
+.base-price {
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+/* Tax toggle button has been removed */
+
+/* Tooltip for tax information */
+.tax-info {
+    position: relative;
+    cursor: help;
+}
+
+.tax-info:hover::after {
+    content: "Tax rates vary by location";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 10;
+    margin-bottom: 0.5rem;
+}
+
+.tax-info:hover::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+    z-index: 10;
+}
