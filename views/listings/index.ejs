@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="/css/search.css">
 <link rel="stylesheet" href="/css/filter-icons.css">
 <link rel="stylesheet" href="/css/tax-display.css">
+<link rel="stylesheet" href="/css/airbnb-cards.css">
 
 <%
 // Initialize filters if not defined
@@ -172,6 +173,12 @@ const categoriesData = typeof categories !== 'undefined' ? categories : ['Beach'
     <div class="col-lg-9">
       <!-- Category Filters -->
       <div id="filters-container">
+        <button class="filter-scroll-btn filter-scroll-left" onclick="scrollFilters('left')">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="filter-scroll-btn filter-scroll-right" onclick="scrollFilters('right')">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
         <div id="filters">
           <a href="/listings" class="filter <%= !filtersData.category || filtersData.category === 'all' ? 'active' : '' %>">
             <div><i class="fa-solid fa-border-all"></i></div>
@@ -254,10 +261,15 @@ const categoriesData = typeof categories !== 'undefined' ? categories : ['Beach'
           <div class="col">
             <a href="/listings/<%= list.id %>" class="listing-links">
               <div class="card-listings h-100">
+                <button class="favorite-btn" onclick="toggleFavorite(event, '<%= list._id %>')">
+                  <i class="fa-regular fa-heart"></i>
+                </button>
                 <img src="<%= list.image.url %>" class="card-img-top" alt="<%= list.title %>" loading="lazy">
                 
-                <div class="card-img-overlay">
-                  <h5 class="card-title">View Details</h5>
+                <div class="carousel-indicators">
+                  <div class="carousel-indicator active"></div>
+                  <div class="carousel-indicator"></div>
+                  <div class="carousel-indicator"></div>
                 </div>
                   
                 <div class="card-body">

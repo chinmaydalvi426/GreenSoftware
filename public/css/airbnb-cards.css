@@ -1,0 +1,162 @@
+/* Airbnb-style Listing Cards */
+
+/* Card Container */
+.card-listings {
+    border: none !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 1.5rem;
+    height: 100%;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.card-listings:hover {
+    transform: translateY(-2px);
+}
+
+/* Card Image */
+.card-listings .card-img-top {
+    border-radius: 12px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    height: 280px;
+    aspect-ratio: 1 / 1;
+    transition: transform 0.5s ease;
+}
+
+/* Remove overlay */
+.card-listings .card-img-overlay {
+    display: none;
+}
+
+/* Card Body */
+.card-listings .card-body {
+    padding: 0.75rem 0 !important;
+    background-color: transparent !important;
+}
+
+/* Card Title */
+.card-listings .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #222222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Card Location */
+.card-listings .card-location {
+    font-size: 0.9rem;
+    color: #717171;
+    margin-bottom: 0.25rem;
+}
+
+/* Card Price */
+.card-listings .card-price {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.card-listings .base-price {
+    font-weight: 600;
+    color: #222222;
+}
+
+/* Tax Info */
+.card-listings .tax-info {
+    font-size: 0.75rem;
+    color: #717171;
+}
+
+/* Total Price */
+.card-listings .total-price {
+    font-size: 0.9rem;
+    color: #222222;
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-listings .total-price span {
+    font-weight: 600;
+}
+
+.card-listings .total-price small {
+    font-size: 0.75rem;
+    color: #717171;
+}
+
+/* Card Rating */
+.card-listings .card-rating {
+    font-size: 0.9rem;
+    color: #222222;
+    display: flex;
+    align-items: center;
+}
+
+.card-listings .card-rating i {
+    color: #222222;
+    margin-right: 0.25rem;
+}
+
+/* Favorite Button */
+.favorite-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    z-index: 10;
+    cursor: pointer;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+    transition: transform 0.2s ease;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+
+.favorite-btn.active {
+    color: var(--primary-color);
+}
+
+/* Image Carousel Indicators */
+.carousel-indicators {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+}
+
+.carousel-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-indicator.active {
+    background-color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-listings .card-img-top {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-listings .card-img-top {
+        height: 220px;
+    }
+}
