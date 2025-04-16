@@ -1,7 +1,18 @@
 {
+  "name": "wanderlust",
+  "version": "1.0.0",
+  "description": "A vacation rental platform with Airbnb-like UI",
+  "main": "index.js",
   "engines": {
     "node": "22.12.0"
   },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "npm install && node init/index.js",
+    "seed": "node init/index.js"
+  },
+
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.16.1",
     "cloudinary": "^1.41.3",
