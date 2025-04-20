@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const Listing = require("../models/listings.js");
 const initData = require("./data.js");
 
-// ✅ MongoDB Atlas URI with your credentials
-const dbURI = 'mongodb+srv://Root:Uh8rsZlzusN3xT5L@Cluster-1.mongodb.net/wonderlust?retryWrites=true&w=majority';
+// Use environment variable for MongoDB connection
+const dbURI = process.env.ATLASDB_URL || 'mongodb://localhost:27017/wonderlust';
 
 async function seedDatabase() {
     try {

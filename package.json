@@ -4,13 +4,14 @@
   "description": "A vacation rental platform with Airbnb-like UI",
   "main": "index.js",
   "engines": {
-    "node": "22.12.0"
+    "node": "22"
   },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "npm install && node init/index.js",
-    "seed": "node init/index.js"
+    "build": "npm install",
+    "seed": "node init/index.js",
+    "postinstall": "node -e \"try { require('fs').existsSync('.env') || require('fs').copyFileSync('.env.example', '.env') } catch(e) {}\""
   },
 
   "dependencies": {
