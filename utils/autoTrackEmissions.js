@@ -22,6 +22,11 @@ async function initAutoTracking() {
         return;
     }
 
+    // Check if CodeCarbon is available
+    if (!carbonTracker.isCodeCarbonAvailable()) {
+        console.log('CodeCarbon is not available. Automatic tracking will use mock data.');
+    }
+
     console.log(`Initializing automatic emissions tracking (every ${TRACK_INTERVAL_MINUTES} minutes)`);
     
     // Ensure emissions directory exists
@@ -35,7 +40,7 @@ async function initAutoTracking() {
         try {
             console.log(`Starting scheduled emissions tracking (${TRACK_DURATION_SECONDS} seconds)`);
             const result = await carbonTracker.startTracking('GreenSoftware-Auto', TRACK_DURATION_SECONDS);
-            console.log('Scheduled tracking started:', result);
+            console.log('Scheduled tracking started:', result.isMock ? '(using mock data)' : '');
         } catch (error) {
             console.error('Error starting scheduled emissions tracking:', error);
         }
@@ -45,7 +50,7 @@ async function initAutoTracking() {
     try {
         console.log(`Starting initial emissions tracking (${TRACK_DURATION_SECONDS} seconds)`);
         const result = await carbonTracker.startTracking('GreenSoftware-Initial', TRACK_DURATION_SECONDS);
-        console.log('Initial tracking started:', result);
+        console.log('Initial tracking started:', result.isMock ? '(using mock data)' : '');
     } catch (error) {
         console.error('Error starting initial emissions tracking:', error);
     }

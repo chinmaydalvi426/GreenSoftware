@@ -5,6 +5,18 @@
         <div class="col-md-12">
             <h1 class="mb-4">Carbon Emissions Dashboard</h1>
             
+            <% if (!isCodeCarbonAvailable) { %>
+            <div class="alert alert-warning">
+                <p>
+                    <strong>Warning:</strong> CodeCarbon Python library is not available. Using mock data for demonstration purposes.
+                </p>
+                <p>
+                    To enable actual carbon tracking, please ensure Python and CodeCarbon are installed:
+                    <code>pip install codecarbon==2.8.3</code>
+                </p>
+            </div>
+            <% } %>
+            
             <div class="alert alert-info">
                 <p>
                     <strong>Carbon Tracking Status:</strong> 
@@ -14,6 +26,11 @@
                         <span class="badge bg-secondary">Inactive</span>
                     <% } %>
                 </p>
+                <% if (latestEmissions && latestEmissions.isMock) { %>
+                    <p class="mt-2 mb-0">
+                        <span class="badge bg-warning text-dark">Using Mock Data</span>
+                    </p>
+                <% } %>
             </div>
 
             <div class="row mb-4">
