@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: wonderlust
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ATLASDB_URL
+        sync: false # This means you'll set it manually in the Render dashboard
+      - key: CLOUD_NAME
+        sync: false
+      - key: CLOUD_API_KEY
+        sync: false
+      - key: CLOUD_API_SECRET
+        sync: false
+      - key: map_token
+        sync: false
+    initialDeployHooks:
+      - npm run seed # This will run the seed script on initial deployment

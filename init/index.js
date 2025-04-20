@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Listing = require("../models/listings.js");
-const initData = require("./data.js");
+const sampleListings = require("./data.js");
 
 // Use environment variable for MongoDB connection
 const dbURI = process.env.ATLASDB_URL || 'mongodb://localhost:27017/wonderlust';
@@ -10,12 +10,18 @@ async function seedDatabase() {
         await mongoose.connect(dbURI);
         console.log("✅ Connected to MongoDB Atlas");
 
-        // Clear old listings
-        await Listing.deleteMany({});
-        console.log("🗑️ Old listings removed");
-
+        // Check if listings already exist
+        const existingCount = await Listing.countDocuments();
+        
+        if (existingCount > 0) {
+            console.log(`✅ Database already has ${existingCount} listings. Skipping seeding.`);
+            return;
+        }
+        
+        console.log("No listings found. Seeding database...");
+        
         // Add owner ID to each listing
-        const listingsWithOwner = initData.data.map((obj) => ({
+        const listingsWithOwner = sampleListings.map((obj) => ({
             ...obj,
             owner: "67932213d22f28e4a9190c64"
         }));
@@ -32,4 +38,9 @@ async function seedDatabase() {
     }
 }
 
-seedDatabase();
+// Run the function if this file is executed directly
+if (require.main === module) {
+    seedDatabase();
+}
+
+module.exports = seedDatabase;
