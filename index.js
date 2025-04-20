@@ -1,3 +1,5 @@
+
+
 if(process.env.NODE_ENV != "production"){
     require('dotenv').config()
 
@@ -14,6 +16,7 @@ const { error } = require("console");
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
 const bookings = require("./routes/booking.js");
+const emissions = require("./routes/emissions.js");
 const session = require("express-session");
 const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
@@ -24,6 +27,7 @@ const user = require("./models/user.js");
 const UserRouter = require("./routes/user.js");
 const { saveRedirectUrl } = require("./middleware.js");
 const { compressResponse, setCacheControl } = require("./utils/performance.js");
+const { initAutoTracking } = require("./utils/autoTrackEmissions.js");
 
 
 // console.log(process.env.secret)
@@ -103,6 +107,7 @@ app.use("/listings" , listings);
 app.use("/listings/:id/reviews" , reviews);
 app.use("/bookings", bookings);
 app.use("/users", UserRouter);
+app.use("/emissions", emissions);
 
 //login
 app.get("/login" , (req,res) => {
@@ -189,4 +194,11 @@ app.use((err,req,res,next) => {
 
 app.listen(8080 ,() => {
     console.log("server is listening at "+"http://localhost:8080/");
+    
+    // Initialize automatic carbon emissions tracking if enabled
+    initAutoTracking().catch(err => {
+        console.error("Failed to initialize carbon tracking:", err);
+    });
 });
+
+

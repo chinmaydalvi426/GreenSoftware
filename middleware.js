@@ -11,6 +11,9 @@ module.exports.isloggedin = (req,res , next) => {
     next();
 }
 
+// Alias for consistency with route naming
+module.exports.isLoggedIn = module.exports.isloggedin;
+
 module.exports.saveRedirectUrl = (req,res,next) => {
     if(req.session.redirecturl){
         res.locals.redirectUrl = req.session.redirecturl;
@@ -27,6 +30,15 @@ module.exports.isOwner = async (req,res,next) => {
     if(!listings.owner._id.equals(res.locals.curuser._id)){
        req.flash("error" , "you are not allowed");
        return res.redirect(`/listings/${id}`);
+    }
+    next();
+}
+
+// Admin middleware to restrict access to admin-only routes
+module.exports.isAdmin = (req, res, next) => {
+    if (!req.user || !req.user.isAdmin) {
+        req.flash("error", "Access denied. Admin privileges required.");
+        return res.redirect("/listings");
     }
     next();
 }

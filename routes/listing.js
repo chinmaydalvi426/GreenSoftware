@@ -161,12 +161,15 @@ router.get("/" ,wrapAsync(async (req,res) => {
  //SHOW
  router.get("/:id" ,wrapAsync(async (req,res) => {
     let {id} = req.params ;
+    console.log(id);
     const idlist = await listing.findById(id).populate({
         path : "review" ,
         populate : {
             path : "author"
         },
     }).populate("owner"); 
+
+    console.log(idlist);
     
     if(!idlist){
         req.flash("error" , "listing you requested for does not exist");

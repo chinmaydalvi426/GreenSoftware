@@ -39,6 +39,10 @@ const Userschema = new Schema({
         type: Date,
         default: Date.now
     },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
     socialLinks: {
         facebook: {
             type: String,

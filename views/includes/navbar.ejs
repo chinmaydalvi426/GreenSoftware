@@ -149,6 +149,12 @@
             <li><a class="dropdown-item" href="/users/profile/<%= curuser._id %>">My Profile</a></li>
             <li><a class="dropdown-item" href="/users/profile/<%= curuser._id %>/listings">My Listings</a></li>
             <li><a class="dropdown-item" href="/bookings">My Bookings</a></li>
+            <% if(curuser.isAdmin) { %>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/emissions">
+              <i class="fa-solid fa-leaf me-2"></i>Carbon Emissions
+            </a></li>
+            <% } %>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="/users/profile/<%= curuser._id %>/edit">Edit Profile</a></li>
             <li><a class="dropdown-item" href="/logout">Log Out</a></li>

@@ -1,0 +1,118 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">Carbon Emissions Dashboard</h1>
+            
+            <div class="alert alert-info">
+                <p>
+                    <strong>Carbon Tracking Status:</strong> 
+                    <% if (isTracking) { %>
+                        <span class="badge bg-success">Active</span>
+                    <% } else { %>
+                        <span class="badge bg-secondary">Inactive</span>
+                    <% } %>
+                </p>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Start Tracking</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="/emissions/start" method="POST">
+                                <div class="mb-3">
+                                    <label for="projectName" class="form-label">Project Name</label>
+                                    <input type="text" class="form-control" id="projectName" name="projectName" value="GreenSoftware" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="duration" class="form-label">Duration (seconds, optional)</label>
+                                    <input type="number" class="form-control" id="duration" name="duration" placeholder="Leave empty for manual stop">
+                                </div>
+                                <button type="submit" class="btn btn-primary" <%= isTracking ? 'disabled' : '' %>>
+                                    Start Tracking
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0">Stop Tracking</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Stop the current carbon emissions tracking session.</p>
+                            <form action="/emissions/stop" method="POST">
+                                <button type="submit" class="btn btn-danger" <%= !isTracking ? 'disabled' : '' %>>
+                                    Stop Tracking
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Latest Emissions Data</h5>
+                </div>
+                <div class="card-body">
+                    <% if (latestEmissions && latestEmissions.success && latestEmissions.data) { %>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for (const [key, value] of Object.entries(latestEmissions.data)) { %>
+                                        <tr>
+                                            <td><%= key %></td>
+                                            <td><%= value %></td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-muted">Last updated: <%= new Date(latestEmissions.timestamp).toLocaleString() %></p>
+                    <% } else { %>
+                        <div class="alert alert-warning">
+                            No emissions data available yet. Start tracking to collect data.
+                        </div>
+                    <% } %>
+                    
+                    <a href="/emissions/download" class="btn btn-outline-primary">
+                        <i class="bi bi-download"></i> Download CSV Data
+                    </a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">About Carbon Tracking</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        This dashboard uses <a href="https://codecarbon.io/" target="_blank">CodeCarbon</a> to track the carbon emissions of your application.
+                        The emissions are calculated based on:
+                    </p>
+                    <ul>
+                        <li>CPU and GPU power consumption</li>
+                        <li>Your geographical location</li>
+                        <li>Local electricity carbon intensity</li>
+                    </ul>
+                    <p>
+                        <strong>Note:</strong> Measurements are estimates and may vary based on hardware, location, and other factors.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
