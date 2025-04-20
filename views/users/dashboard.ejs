@@ -98,7 +98,11 @@
                                 <a href="/bookings/<%= booking._id %>" class="list-group-item list-group-item-action">
                                     <div class="d-flex w-100 justify-content-between align-items-center">
                                         <div>
-                                            <h6 class="mb-1"><%= booking.listing.title %></h6>
+                                            <% if (booking.listing) { %>
+                                                <h6 class="mb-1"><%= booking.listing.title %></h6>
+                                            <% } else { %>
+                                                <h6 class="mb-1 text-muted">[Listing no longer available]</h6>
+                                            <% } %>
                                             <p class="mb-1 small text-muted">
                                                 <i class="fa-solid fa-calendar me-1"></i>
                                                 <%= new Date(booking.checkIn).toLocaleDateString() %> to <%= new Date(booking.checkOut).toLocaleDateString() %>
@@ -144,9 +148,18 @@
                                 <a href="/bookings/<%= booking._id %>" class="list-group-item list-group-item-action">
                                     <div class="d-flex w-100 justify-content-between align-items-center">
                                         <div>
-                                            <h6 class="mb-1"><%= booking.listing.title %></h6>
+                                            <% if (booking.listing) { %>
+                                                <h6 class="mb-1"><%= booking.listing.title %></h6>
+                                            <% } else { %>
+                                                <h6 class="mb-1 text-muted">[Listing no longer available]</h6>
+                                            <% } %>
                                             <p class="mb-1 small">
-                                                <span class="text-muted">Guest:</span> <%= booking.user.username %>
+                                                <span class="text-muted">Guest:</span> 
+                                                <% if (booking.user) { %>
+                                                    <%= booking.user.username %>
+                                                <% } else { %>
+                                                    [User account deleted]
+                                                <% } %>
                                             </p>
                                             <p class="mb-1 small text-muted">
                                                 <i class="fa-solid fa-calendar me-1"></i>

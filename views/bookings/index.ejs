@@ -60,10 +60,19 @@
                                                     <span class="badge bg-success mb-2">Confirmed</span>
                                                 <% } %>
                                                 
-                                                <h5 class="card-title"><%= booking.listing.title %></h5>
-                                                <p class="card-text">
-                                                    <i class="fa-solid fa-location-dot me-1 text-primary"></i>
-                                                    <%= booking.listing.location %>, <%= booking.listing.country %>
+                                                <% if (booking.listing) { %>
+                                                    <h5 class="card-title"><%= booking.listing.title %></h5>
+                                                    <p class="card-text">
+                                                        <i class="fa-solid fa-location-dot me-1 text-primary"></i>
+                                                        <%= booking.listing.location %>, <%= booking.listing.country %>
+                                                    </p>
+                                                <% } else { %>
+                                                    <h5 class="card-title text-muted">[Listing no longer available]</h5>
+                                                    <p class="card-text text-muted">
+                                                        <i class="fa-solid fa-circle-exclamation me-1"></i>
+                                                        This listing has been removed
+                                                    </p>
+                                                <% } %>
                                                 </p>
                                                 
                                                 <div class="booking-dates mb-3">
@@ -121,10 +130,19 @@
                                             <div class="card-body">
                                                 <span class="badge bg-secondary mb-2">Completed</span>
                                                 
-                                                <h5 class="card-title"><%= booking.listing.title %></h5>
-                                                <p class="card-text">
-                                                    <i class="fa-solid fa-location-dot me-1 text-primary"></i>
-                                                    <%= booking.listing.location %>, <%= booking.listing.country %>
+                                                <% if (booking.listing) { %>
+                                                    <h5 class="card-title"><%= booking.listing.title %></h5>
+                                                    <p class="card-text">
+                                                        <i class="fa-solid fa-location-dot me-1 text-primary"></i>
+                                                        <%= booking.listing.location %>, <%= booking.listing.country %>
+                                                    </p>
+                                                <% } else { %>
+                                                    <h5 class="card-title text-muted">[Listing no longer available]</h5>
+                                                    <p class="card-text text-muted">
+                                                        <i class="fa-solid fa-circle-exclamation me-1"></i>
+                                                        This listing has been removed
+                                                    </p>
+                                                <% } %>
                                                 </p>
                                                 
                                                 <div class="booking-dates mb-3">
@@ -179,10 +197,19 @@
                                             <div class="card-body">
                                                 <span class="badge bg-danger mb-2">Cancelled</span>
                                                 
-                                                <h5 class="card-title"><%= booking.listing.title %></h5>
-                                                <p class="card-text">
-                                                    <i class="fa-solid fa-location-dot me-1 text-primary"></i>
-                                                    <%= booking.listing.location %>, <%= booking.listing.country %>
+                                                <% if (booking.listing) { %>
+                                                    <h5 class="card-title"><%= booking.listing.title %></h5>
+                                                    <p class="card-text">
+                                                        <i class="fa-solid fa-location-dot me-1 text-primary"></i>
+                                                        <%= booking.listing.location %>, <%= booking.listing.country %>
+                                                    </p>
+                                                <% } else { %>
+                                                    <h5 class="card-title text-muted">[Listing no longer available]</h5>
+                                                    <p class="card-text text-muted">
+                                                        <i class="fa-solid fa-circle-exclamation me-1"></i>
+                                                        This listing has been removed
+                                                    </p>
+                                                <% } %>
                                                 </p>
                                                 
                                                 <div class="booking-dates mb-3">

@@ -162,18 +162,25 @@ router.get("/dashboard", isloggedin, wrapAsync(async (req, res) => {
     const listings = await Listing.find({ owner: userId });
     
     // Get user's bookings
-    const bookings = await Booking.find({ user: userId })
+    let bookings = await Booking.find({ user: userId })
         .populate("listing")
         .sort({ createdAt: -1 })
-        .limit(5);
+        .limit(10); // Fetch more to account for potential null listings
+    
+    // Filter out bookings with null listings if needed, but keep them in the array
+    // This ensures we still show bookings even if the listing was deleted
     
     // Get bookings for user's listings
     const listingIds = listings.map(listing => listing._id);
-    const receivedBookings = await Booking.find({ listing: { $in: listingIds } })
+    let receivedBookings = await Booking.find({ listing: { $in: listingIds } })
         .populate("user")
         .populate("listing")
         .sort({ createdAt: -1 })
-        .limit(5);
+        .limit(10); // Fetch more to account for potential null users
+    
+    // Limit to 5 for display
+    bookings = bookings.slice(0, 5);
+    receivedBookings = receivedBookings.slice(0, 5);
     
     res.render("users/dashboard.ejs", { 
         listings, 

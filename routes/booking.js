@@ -49,8 +49,14 @@ const isListingOwner = async (req, res, next) => {
 
 // Get all bookings for the current user
 router.get("/", isloggedin, wrapAsync(async (req, res) => {
+    // Fetch bookings and populate listing data
+    // Note: Some listings might be null if they've been deleted
     const bookings = await Booking.find({ user: req.user._id })
-        .populate("listing")
+        .populate({
+            path: "listing",
+            // Even if the listing is null, we still want to include the booking
+            options: { allowEmptyResults: true }
+        })
         .sort({ createdAt: -1 });
     
     res.render("bookings/index.ejs", { bookings });
