@@ -297,6 +297,17 @@ const categoriesData = typeof categories !== 'undefined' ? categories : ['Beach'
           </div>
         <% } %>
       </div>
+      
+      <!-- Pagination Controls -->
+      <div class="pagination-container mt-4">
+        <div id="pagination-controls"></div>
+        <% if (pagination && pagination.totalPages > 1) { %>
+          <p class="text-center text-muted mt-2">
+            Showing page <%= pagination.page %> of <%= pagination.totalPages %> 
+            (<%= pagination.totalListings %> total listings)
+          </p>
+        <% } %>
+      </div>
     </div>
   </div>
 </div>
@@ -413,6 +424,7 @@ const categoriesData = typeof categories !== 'undefined' ? categories : ['Beach'
 <div class="filter-overlay" id="filterOverlay"></div>
 
 <script>
+
   // Tax switch functionality
   let taxSwitch = document.getElementById("flexSwitchCheckDefault");
   taxSwitch.addEventListener("click", () => {

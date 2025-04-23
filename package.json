@@ -12,7 +12,8 @@
     "build": "npm install && node init/index.js",
     "seed:atlas": "node seed-atlas.js",
     "check:atlas": "node check-atlas.js",
-    "seed": "node init/index.js"
+    "seed": "node init/index.js",
+    "update:geometry": "node utils/updateGeometry.js"
   },
 
   "dependencies": {

@@ -17,6 +17,7 @@ def setup_tracker(project_name="GreenSoftware", duration=None):
     )
     return tracker
 
+
 def track_emissions(duration=None, project_name="GreenSoftware"):
     """Track emissions for a specified duration in seconds"""
     tracker = setup_tracker(project_name)

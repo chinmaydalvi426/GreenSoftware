@@ -3,7 +3,9 @@ let mapaccesstoken = mapToken;
 mapboxgl.accessToken = mapaccesstoken;
 
 // Check if the map container exists and listing has valid geometry
-if (document.getElementById('map') && listing && listing.geometry && listing.geometry.coordinates) {
+if (document.getElementById('map') && listing && listing.geometry && 
+    listing.geometry.coordinates && listing.geometry.coordinates.length === 2 &&
+    !isNaN(listing.geometry.coordinates[0]) && !isNaN(listing.geometry.coordinates[1])) {
     // Create responsive map
     const map = new mapboxgl.Map({
         container: 'map',
